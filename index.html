@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Monero (XMR) price prediction using historical data and technical analysis.">
+  <meta name="keywords" content="Monero, XMR, cryptocurrency, price prediction, trading">
   <title>Monero Price Prediction</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
   <style>
@@ -96,7 +98,12 @@
       box-shadow: 0 4px 15px rgba(255, 59, 63, 0.4);
     }
 
-    button:hover {
+    button:disabled {
+      background: #555; /* Darker background when disabled */
+      cursor: not-allowed; /* Change cursor to indicate disabled state */
+    }
+
+    button:hover:not(:disabled) {
       transform: translateY(-3px);
       box-shadow: 0 6px 20px rgba(255, 59, 63, 0.6);
     }
@@ -119,13 +126,26 @@
         transform: translateY(0);
       }
     }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+      button {
+        padding: 0.8rem 1.5rem;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Monero (XMR) Price Prediction</h1>
     <p id="current-price">Fetching current price...</p>
-    <p id="prediction">Prediction will appear here.</p>
+    <p id="prediction" aria-live="polite">Prediction will appear here.</p>
     <button id="predict-button">Predict Short-Term Movement</button>
     <p class="loading" id="loading">Analyzing data... Please wait.</p>
 
@@ -139,7 +159,7 @@
       <p id="bollinger-bands">Bollinger Bands: Loading...</p>
       <p id="volume">Trading Volume: Loading...</p>
       <p id="sentiment">Market Sentiment: Loading...</p>
-      <p id="price-target">Price Target: Loading...</p>
+      <p id="price-target" aria-live="polite">Price Target: Loading...</p>
     </div>
   </div>
 
@@ -150,7 +170,7 @@
         const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=usd');
         const data = await response.json();
         const price = data.monero.usd;
-        document.getElementById('current-price').textContent = `Current Monero Price: $${price}`;
+        document.getElementById('current-price').textContent = `Current Monero Price: ${price}`;
         return price;
       } catch (error) {
         console.error('Error fetching Monero price:', error);
@@ -207,8 +227,8 @@
       const sma = calculateSMA(prices, period);
       const stdDev = Math.sqrt(prices.slice(-period).reduce((acc, price) => acc + Math.pow(price - sma, 2), 0) / period);
       const upperBand = sma + 2 * stdDev;
-      const lowerBand = sma - 2 * stdDev;
-      return { sma, upperBand, lowerBand };
+      const lowerBand = sma - 2 * stdDev
+       return { sma, upperBand, lowerBand };
     }
 
     // Function to calculate Relative Strength Index (RSI)
@@ -246,10 +266,13 @@
     // Improved prediction logic with buy/sell targets
     async function predictMovement() {
       document.getElementById('loading').style.display = 'block';
+      document.getElementById('predict-button').disabled = true; // Disable button
+
       const historicalData = await fetchHistoricalData();
       if (!historicalData) {
         document.getElementById('prediction').textContent = 'Failed to fetch historical data.';
         document.getElementById('loading').style.display = 'none';
+        document.getElementById('predict-button').disabled = false; // Re-enable button
         return;
       }
 
@@ -295,27 +318,28 @@
       if (sentiment > 70) predictionScore += 5; // Positive sentiment
 
       // Determine prediction and price target
-      let prediction = '';
+           let prediction = '';
       let priceTarget = '';
 
       if (predictionScore >= 60) {
         prediction = `Prediction: Strong upward trend. Likely to go UP.`;
         priceTarget = upperBand 
-          ? `Suggested Sell Price: $${Math.min(upperBand, currentPrice * 1.05).toFixed(2)}`
-          : `Suggested Sell Price: $${(currentPrice * 1.03).toFixed(2)} (3% above current price)`;
+          ? `Suggested Sell Price: ${Math.min(upperBand, currentPrice * 1.05).toFixed(2)}`
+          : `Suggested Sell Price: ${(currentPrice * 1.03).toFixed(2)} (3% above current price)`;
       } else if (predictionScore <= 40) {
         prediction = `Prediction: Strong downward trend. Likely to go DOWN.`;
         priceTarget = lowerBand 
-          ? `Suggested Buy Price: $${Math.max(lowerBand, currentPrice * 0.97).toFixed(2)}`
-          : `Suggested Buy Price: $${(currentPrice * 0.95).toFixed(2)} (5% below current price)`;
+          ? `Suggested Buy Price: ${Math.max(lowerBand, currentPrice * 0.97).toFixed(2)}`
+          : `Suggested Buy Price: ${(currentPrice * 0.95).toFixed(2)} (5% below current price)`;
       } else {
         prediction = `Prediction: Market conditions are neutral. No strong trend detected.`;
-        priceTarget = `No clear price target. Monitor Bollinger Bands (Upper: $${upperBand?.toFixed(2)}, Lower: $${lowerBand?.toFixed(2)})`;
+        priceTarget = `No clear price target. Monitor Bollinger Bands (Upper: ${upperBand?.toFixed(2)}, Lower: ${lowerBand?.toFixed(2)})`;
       }
 
       document.getElementById('prediction').textContent = prediction;
       document.getElementById('price-target').textContent = priceTarget;
       document.getElementById('loading').style.display = 'none';
+      document.getElementById('predict-button').disabled = false; // Re-enable button
     }
 
     // Event listener for the predict button
