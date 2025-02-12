@@ -58,20 +58,6 @@
       font-size: 1rem;
       color: #ccc;
     }
-
-    /* Hidden by default, shown based on selection */
-    .model-page {
-      display: none;
-      text-align: center;
-    }
-
-    .model-page h2 {
-      color: #ff7f00;
-    }
-
-    .model-page p {
-      color: #ccc;
-    }
   </style>
 </head>
 <body>
@@ -90,38 +76,16 @@
     </div>
   </div>
 
-  <!-- Model 1 Page -->
-  <div class="model-page" id="model1Page">
-    <h2>Model 1 - Prediction Logic 1</h2>
-    <p>This is the first prediction model for Monero price.</p>
-    <button onclick="goBack()">Go Back</button>
-  </div>
-
-  <!-- Model 2 Page -->
-  <div class="model-page" id="model2Page">
-    <h2>Model 2 - Prediction Logic 2</h2>
-    <p>This is the second prediction model for Monero price.</p>
-    <button onclick="goBack()">Go Back</button>
-  </div>
-
   <script>
-    // Show the selected model page and hide the landing page
+    // Redirect to model1.html when Model 1 is clicked
     document.getElementById('model1Option').addEventListener('click', () => {
-      document.getElementById('landingPage').style.display = 'none';
-      document.getElementById('model1Page').style.display = 'block';
+      window.location.href = 'model1.html'; // Navigate to model1.html
     });
 
+    // Redirect to model2.html when Model 2 is clicked
     document.getElementById('model2Option').addEventListener('click', () => {
-      document.getElementById('landingPage').style.display = 'none';
-      document.getElementById('model2Page').style.display = 'block';
+      window.location.href = 'model2.html'; // Navigate to model2.html
     });
-
-    // Go back to the landing page
-    function goBack() {
-      document.getElementById('landingPage').style.display = 'block';
-      document.getElementById('model1Page').style.display = 'none';
-      document.getElementById('model2Page').style.display = 'none';
-    }
   </script>
 </body>
 </html>
