@@ -63,22 +63,6 @@ See the prediction and suggested buy/sell price targets.
 
 Use the data to make informed trading decisions.
 
-Contributing
-Contributions are welcome! If you'd like to contribute, please follow these steps:
-
-Fork the repository.
-
-Create a new branch (git checkout -b feature/your-feature).
-
-Commit your changes (git commit -m 'Add some feature').
-
-Push to the branch (git push origin feature/your-feature).
-
-Open a pull request.
-
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
 Acknowledgments
 CoinGecko for providing the cryptocurrency data API.
 
