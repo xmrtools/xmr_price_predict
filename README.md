@@ -1,78 +1,91 @@
-# Monero Price Prediction Website
+# Monero (XMR) Price Prediction Dashboard
 
-A sleek and modern website that predicts short-term price movements of Monero (XMR) using technical indicators like SMA, RSI, MACD, and Bollinger Bands. The website also suggests buy/sell price targets based on the prediction.
+*Real-time technical analysis and price prediction for Monero (XMR)*
 
-## Features
+## 🔍 Project Description
+A privacy-focused cryptocurrency analysis tool providing real-time price predictions using advanced technical indicators. This non-AI version focuses on traditional financial analysis methods including:
 
-- **Real-Time Price Data**: Fetches the current price of Monero using the CoinGecko API.
-- **Technical Indicators**:
-  - Simple Moving Average (SMA)
-  - Relative Strength Index (RSI)
-  - Moving Average Convergence Divergence (MACD)
-  - Bollinger Bands
-- **Weighted Prediction Logic**: Combines multiple indicators for accurate predictions.
-- **Buy/Sell Price Targets**: Suggests optimal buy/sell prices based on the prediction.
-- **Dark Theme**: Sleek and modern design with a dark theme for better readability.
-- **Responsive Design**: Works seamlessly on all devices.
+- Moving Average Convergence Divergence (MACD)
+- Relative Strength Index (RSI)
+- Bollinger Bands
+- Simple/Exponential Moving Averages (SMA/EMA)
+- Average True Range (ATR)
 
-- ## How It Works
+## 🚀 Features
+**Core Analysis Engine**
+- Real-time price data from CoinGecko API
+- 14-day RSI with Wilder's smoothing
+- Volatility-adjusted risk parameters
+- MACD with proper signal line calculation
+- Dynamic confidence scoring system
 
-1. **Fetch Data**: The website fetches the current price and historical data for Monero using the CoinGecko API.
-2. **Calculate Indicators**: It calculates technical indicators like SMA, RSI, MACD, and Bollinger Bands.
-3. **Make Prediction**: A weighted prediction score is calculated based on the indicators.
-4. **Suggest Targets**: If the price is predicted to go up, a sell target is suggested. If the price is predicted to go down, a buy target is suggested.
-5. **Display Results**: The prediction and price targets are displayed on the website.
+**User Interface**
+- Interactive prediction button with progress visualization
+- Technical indicator glossary
+- Real-time market data display
+- Mobile-responsive design
+- Educational FAQ section
 
-6. ## Technologies Used
+**Risk Management**
+- Auto-calculated stop loss/take profit levels
+- Volume spike detection
+- Bollinger Band squeeze alerts
+- Historical performance backtesting
 
-- **Frontend**:
-  - HTML, CSS, JavaScript
-  - [TensorFlow.js](https://www.tensorflow.org/js) (for future AI integration)
-- **APIs**:
-  - [CoinGecko API](https://www.coingecko.com/en/api) for price and historical data.
-- **Styling**:
-  - Google Fonts (Roboto)
-  - CSS Animations
+## ⚙️ Installation
+1. Clone repository: git clone https://github.com/yourusername/monero-price-predictor.git
+2. 2. Open `index.html` in modern browser
+
+## 📊 Usage
+1. Click "Predict Short-Term Movement"
+2. View real-time analysis:
+   - Current price and prediction
+   - Technical indicator values
+   - Risk management parameters
+3. Explore educational resources:
+   - Technical analysis glossary
+   - Market dynamics FAQ
+   - Monero privacy fundamentals
+
+## 🔌 API Usage
+// CoinGecko API Endpoints Used:
+Simple Price: /simple/price
+Market Chart: /coins/monero/market_chart
+
+*Note: Rate limited to 10-50 requests/minute*
+
+## 📈 Technical Indicators
+| Indicator          | Calculation Method       | Weight | Purpose                          |
+|--------------------|--------------------------|--------|----------------------------------|
+| RSI 14            | Wilder's Smoothing       | 20%    | Momentum measurement             |
+| MACD              | EMA 12/26 + Signal 9     | 20%    | Trend identification             |
+| Bollinger Bands   | 20 SMA ± 2σ              | 15%    | Volatility assessment            |
+| Volume Analysis   | 7-day SMA comparison     | 10%    | Market participation evaluation  |
+| ATR               | 14-day SMA of TR         | 10%    | Risk parameter calculation       |
+
+## 🤝 Contributing
+Areas for improvement:
+- Add additional technical indicators (Stochastic Oscillator, Ichimoku Cloud)
+- Implement API rate limit handling
+- Enhance error recovery mechanisms
+- Improve mobile UX
+
+Contribution guidelines:
+1. Fork the repository
+2. Create feature branch
+3. Submit PR with detailed description
+
+## ⚠️ Disclaimer
+This project is for educational purposes only. Cryptocurrency trading carries
+substantial risk. The authors accept no liability for financial losses
+incurred using this tool. Never invest more than you can afford to lose.
+
+
+## 📜 License
+MIT License - See [LICENSE](LICENSE) for details
 
 ---
 
-## Installation
+**Support This Project**  
+XMR: `42BRf8wjmMuRHx256tZogA1TPTbcPh9xHAf5umyhAg981RAkqrXB2QNK1z3cqLb313GTfwxaGuvLjUzm6bXRSAP52ypGsUQ` *(click to copy)*
 
-To run this project locally, follow these steps:
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/monero-price-prediction.git
-   cd monero-price-prediction
-Open the project:
-
-Open the index.html file in your browser.
-
-Run the website:
-
-Click the "Predict Short-Term Movement" button to see the prediction and price targets.
-
-Usage
-Open the website.
-
-View the current price of Monero.
-
-Click the "Predict Short-Term Movement" button.
-
-See the prediction and suggested buy/sell price targets.
-
-Use the data to make informed trading decisions.
-
-Acknowledgments
-CoinGecko for providing the cryptocurrency data API.
-
-TensorFlow.js for enabling machine learning in the browser.
-
-Google Fonts for the Roboto font.
-
-Contact
-For questions or feedback, feel free to reach out:
-
-GitHub: https://github.com/xmrtools
-Website: https://xmrtools.github.io/xmr_price_predict/
-Made with ❤️ by xmrtools
