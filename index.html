@@ -25,16 +25,18 @@
 
     .container {
       text-align: center;
+      max-width: 90%; /* Limit width for better mobile scaling */
+      margin: auto;
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2rem; /* Smaller font size for mobile */
       color: #ff7f00; /* Monero orange */
       margin-bottom: 20px;
     }
 
     img {
-      width: 100px;
+      width: 80px; /* Smaller logo for mobile */
       margin-bottom: 20px;
     }
 
@@ -42,18 +44,20 @@
       display: flex;
       gap: 20px;
       justify-content: center;
-      flex-wrap: wrap; /* Responsive layout */
+      flex-wrap: wrap; /* Stack options vertically on small screens */
     }
 
     .option {
       background-color: #2a2a2a;
-      padding: 20px;
+      padding: 15px; /* Reduced padding for mobile */
       border-radius: 10px;
       cursor: pointer;
       transition: transform 0.3s ease, background-color 0.3s ease;
       border: 2px solid #ff7f00;
-      width: 150px; /* Fixed width for consistency */
+      width: 100%; /* Full width on mobile */
+      max-width: 200px; /* Limit width for larger screens */
       text-align: center;
+      margin: 10px auto; /* Center align options */
     }
 
     .option:hover {
@@ -63,13 +67,13 @@
 
     .option h2 {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.2rem; /* Smaller font size for mobile */
       color: #ff7f00;
     }
 
     .option p {
       margin: 5px 0 0;
-      font-size: 0.9rem;
+      font-size: 0.8rem; /* Smaller font size for mobile */
       color: #ccc;
       line-height: 1.4; /* Improved readability */
     }
@@ -78,10 +82,11 @@
       background: linear-gradient(90deg, #ff7f00, #e67300);
       color: #fff;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 24px; /* Larger buttons for touch */
       border-radius: 5px;
       cursor: pointer;
       margin-top: 20px;
+      font-size: 1rem; /* Larger font size for mobile */
       transition: transform 0.3s ease;
     }
 
@@ -102,24 +107,34 @@
       background: none;
       border: none;
       color: #ff7f00;
-      font-size: 1rem;
+      font-size: 0.9rem; /* Smaller font size for mobile */
       cursor: pointer;
       text-align: left;
       padding: 5px 0;
+      width: 100%; /* Full width for mobile */
     }
 
     .faq-item p {
       margin: 5px 0 0;
       color: #ccc;
       display: none;
-      font-size: 0.9rem;
+      font-size: 0.8rem; /* Smaller font size for mobile */
       line-height: 1.4; /* Improved readability */
     }
 
     /* Responsive Design */
     @media (max-width: 600px) {
-      .options {
-        flex-direction: column;
+      h1 {
+        font-size: 1.8rem; /* Even smaller for very small screens */
+      }
+
+      img {
+        width: 60px; /* Even smaller logo for very small screens */
+      }
+
+      button {
+        font-size: 0.9rem; /* Adjust button font size */
+        padding: 10px 20px; /* Slightly smaller buttons */
       }
     }
   </style>
