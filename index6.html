@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monero Price Prediction</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <style>
+    /* CSS Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #121212; /* Dark background */
+      color: #e0e0e0; /* Light text */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Align to the top */
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem;
+      overflow-y: auto; /* Enable vertical scrolling */
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05); /* Semi-transparent white */
+      padding: 2.5rem;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      max-width: 800px; /* Increased width */
+      width: 90%;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      color: #ffffff; /* White heading */
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 1rem 0;
+      color: #b0b0b0; /* Light gray text */
+    }
+
+    #current-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #4caf50; /* Green for price */
+    }
+
+    #prediction {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #ffeb3b; /* Yellow for prediction */
+      margin-bottom: 1.5rem;
+    }
+
+    .data-container {
+      margin-top: 1.5rem;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+
+    .data-container h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
+
+    .data-container p {
+      margin: 0.5rem 0;
+      color: #b0b0b0;
+    }
+
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      color: #fff;
+      background: linear-gradient(135deg, #ff6f61, #ff3b3f);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-top: 1.5rem;
+      box-shadow: 0 4px 15px rgba(255, 59, 63, 0.4);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 59, 63, 0.6);
+    }
+
+    .loading {
+      display: none;
+      font-size: 1rem;
+      color: #bdbdbd; /* Light gray for loading text */
+      margin-top: 1rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Monero (XMR) Price Prediction</h1>
+    <p id="current-price">Fetching current price...</p>
+    <p id="prediction">Prediction will appear here.</p>
+    <button id="predict-button">Predict Short-Term Movement</button>
+    <p class="loading" id="loading">Analyzing data... Please wait.</p>
+
+    <!-- Data Display Section -->
+    <div class="data-container">
+      <h3>Data Used for Prediction</h3>
+      <p id="historical-prices">Historical Prices: Loading...</p>
+      <p id="sma7">7-Day SMA: Loading...</p>
+      <p id="rsi14">14-Day RSI: Loading...</p>
+      <p id="macd">MACD: Loading...</p>
+      <p id="bollinger-bands">Bollinger Bands: Loading...</p>
+      <p id="volume">Trading Volume: Loading...</p>
+      <p id="sentiment">Market Sentiment: Loading...</p>
+      <p id="price-target">Price Target: Loading...</p>
+    </div>
+  </div>
+
+  <script>
+    // Function to fetch the current price of Monero (XMR) using CoinGecko API
+    async function fetchMoneroPrice() {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=monero&vs_currencies=usd');
+        const data = await response.json();
+        const price = data.monero.usd;
+        document.getElementById('current-price').textContent = `Current Monero Price: $${price}`;
+        return price;
+      } catch (error) {
+        console.error('Error fetching Monero price:', error);
+        document.getElementById('current-price').textContent = 'Failed to fetch price.';
+        return null;
+      }
+    }
+
+    // Function to fetch historical data for Monero (last 30 days)
+    async function fetchHistoricalData() {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/coins/monero/market_chart?vs_currency=usd&days=30');
+        const data = await response.json();
+        return {
+          prices: data.prices.map((entry) => entry[1]), // Extract prices
+          volumes: data.total_volumes.map((entry) => entry[1]), // Extract volumes
+        };
+      } catch (error) {
+        console.error('Error fetching historical data:', error);
+        return null;
+      }
+    }
+
+    // Function to calculate Simple Moving Average (SMA)
+    function calculateSMA(prices, period) {
+      if (prices.length < period) return null;
+      const sum = prices.slice(-period).reduce((acc, price) => acc + price, 0);
+      return sum / period;
+    }
+
+    // Function to calculate Exponential Moving Average (EMA)
+    function calculateEMA(prices, period) {
+      if (prices.length < period) return null;
+      const multiplier = 2 / (period + 1);
+      let ema = prices[0];
+      for (let i = 1; i < prices.length; i++) {
+        ema = (prices[i] - ema) * multiplier + ema;
+      }
+      return ema;
+    }
+
+    // Function to calculate MACD
+    function calculateMACD(prices) {
+      const ema12 = calculateEMA(prices, 12);
+      const ema26 = calculateEMA(prices, 26);
+      const macd = ema12 - ema26;
+      const signalLine = calculateEMA(prices.slice(-9), 9); // Signal line (9-day EMA of MACD)
+      return { macd, signalLine };
+    }
+
+    // Function to calculate Bollinger Bands
+    function calculateBollingerBands(prices, period = 20) {
+      if (prices.length < period) return null;
+      const sma = calculateSMA(prices, period);
+      const stdDev = Math.sqrt(prices.slice(-period).reduce((acc, price) => acc + Math.pow(price - sma, 2), 0) / period);
+      const upperBand = sma + 2 * stdDev;
+      const lowerBand = sma - 2 * stdDev;
+      return { sma, upperBand, lowerBand };
+    }
+
+    // Function to calculate Relative Strength Index (RSI)
+    function calculateRSI(prices, period = 14) {
+      if (prices.length < period) return null;
+
+      let gains = 0;
+      let losses = 0;
+
+      for (let i = 1; i <= period; i++) {
+        const change = prices[i] - prices[i - 1];
+        if (change > 0) gains += change;
+        else losses -= change;
+      }
+
+      const averageGain = gains / period;
+      const averageLoss = losses / period;
+      const relativeStrength = averageGain / averageLoss;
+      return 100 - (100 / (1 + relativeStrength));
+    }
+
+    // Function to calculate average trading volume
+    function calculateAverageVolume(volumes, period = 7) {
+      if (volumes.length < period) return null;
+      const sum = volumes.slice(-period).reduce((acc, volume) => acc + volume, 0);
+      return sum / period;
+    }
+
+    // Function to fetch market sentiment (mock data for demonstration)
+    async function fetchMarketSentiment() {
+      // Replace this with an actual API call (e.g., CryptoCompare, alternative.me)
+      return Math.random() * 100; // Random sentiment score between 0 and 100
+    }
+
+    // Improved prediction logic with buy/sell targets
+    async function predictMovement() {
+      document.getElementById('loading').style.display = 'block';
+      const historicalData = await fetchHistoricalData();
+      if (!historicalData) {
+        document.getElementById('prediction').textContent = 'Failed to fetch historical data.';
+        document.getElementById('loading').style.display = 'none';
+        return;
+      }
+
+      const { prices, volumes } = historicalData;
+      const currentPrice = prices[prices.length - 1];
+      const sma7 = calculateSMA(prices, 7);
+      const rsi = calculateRSI(prices);
+      const { macd, signalLine } = calculateMACD(prices);
+      const { sma: bollingerSMA, upperBand, lowerBand } = calculateBollingerBands(prices);
+      const averageVolume = calculateAverageVolume(volumes);
+      const sentiment = await fetchMarketSentiment();
+
+      // Display data
+      document.getElementById('historical-prices').textContent = `Historical Prices: ${prices.map((price) => price.toFixed(2)).join(', ')}`;
+      document.getElementById('sma7').textContent = `7-Day SMA: ${sma7.toFixed(2)}`;
+      document.getElementById('rsi14').textContent = `14-Day RSI: ${rsi.toFixed(2)}`;
+      document.getElementById('macd').textContent = `MACD: ${macd.toFixed(2)} (Signal Line: ${signalLine.toFixed(2)})`;
+      document.getElementById('bollinger-bands').textContent = `Bollinger Bands: Upper=${upperBand.toFixed(2)}, Middle=${bollingerSMA.toFixed(2)}, Lower=${lowerBand.toFixed(2)}`;
+      document.getElementById('volume').textContent = `Average Trading Volume: ${averageVolume.toFixed(2)}`;
+      document.getElementById('sentiment').textContent = `Market Sentiment: ${sentiment.toFixed(2)}`;
+
+      // Weighted prediction logic
+      let predictionScore = 0;
+
+      // SMA Weight: 30%
+      if (currentPrice > sma7) predictionScore += 30;
+
+      // RSI Weight: 20%
+      if (rsi < 30) predictionScore += 20; // Oversold
+      else if (rsi > 70) predictionScore -= 20; // Overbought
+
+      // MACD Weight: 20%
+      if (macd > signalLine) predictionScore += 20;
+
+      // Bollinger Bands Weight: 15%
+      if (currentPrice > upperBand) predictionScore -= 15; // Overbought
+      else if (currentPrice < lowerBand) predictionScore += 15; // Oversold
+
+      // Volume Weight: 10%
+      if (averageVolume > volumes.slice(-1)[0]) predictionScore += 10; // Increasing volume
+
+      // Sentiment Weight: 5%
+      if (sentiment > 70) predictionScore += 5; // Positive sentiment
+
+      // Determine prediction and price target
+      let prediction = '';
+      let priceTarget = '';
+
+      if (predictionScore >= 60) {
+        prediction = `Prediction: Strong upward trend. Likely to go UP.`;
+        priceTarget = upperBand 
+          ? `Suggested Sell Price: $${Math.min(upperBand, currentPrice * 1.05).toFixed(2)}`
+          : `Suggested Sell Price: $${(currentPrice * 1.03).toFixed(2)} (3% above current price)`;
+      } else if (predictionScore <= 40) {
+        prediction = `Prediction: Strong downward trend. Likely to go DOWN.`;
+        priceTarget = lowerBand 
+          ? `Suggested Buy Price: $${Math.max(lowerBand, currentPrice * 0.97).toFixed(2)}`
+          : `Suggested Buy Price: $${(currentPrice * 0.95).toFixed(2)} (5% below current price)`;
+      } else {
+        prediction = `Prediction: Market conditions are neutral. No strong trend detected.`;
+        priceTarget = `No clear price target. Monitor Bollinger Bands (Upper: $${upperBand?.toFixed(2)}, Lower: $${lowerBand?.toFixed(2)})`;
+      }
+
+      document.getElementById('prediction').textContent = prediction;
+      document.getElementById('price-target').textContent = priceTarget;
+      document.getElementById('loading').style.display = 'none';
+    }
+
+    // Event listener for the predict button
+    document.getElementById('predict-button').addEventListener('click', predictMovement);
+
+    // Fetch the price when the page loads
+    fetchMoneroPrice();
+  </script>
+</body>
+</html>
